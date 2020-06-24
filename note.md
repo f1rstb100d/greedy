@@ -156,5 +156,50 @@ e.g. 我们经常有意见分歧
 # Spell Correction(拼写纠正)
 ```
 通过计算用户输入的词和每一个候选词的编辑距离(需要修改几个字母就能变成候选词为几个编辑距离)，选最小编辑距离的词为纠正之后的词。
+词库太大的话复杂度太高，优化：给定用户输入之后，仅生成编辑距离为1、2的所有字符串(replace add delete)(编辑距离为2的字符串是在编辑距离为1的字符串基础上进行那三个操作)，然后过滤返回结果
+怎么过滤：输入s，最佳字符串为c，需要argmaxp(c|s),找最好的c
+argmax(c|s)=argmax p(s|c)*p(c)/p(s)
+因为p(s)在对每个c的时候都一样，忽略
+p(s|c)为对一个正确的字符串，有百分之多少的人输入成了s的形式
+p(c)为总的文本里，根据c出现的次数计算的概率
+```
 
+# Filtering Words
+```
+去停用词、去低频词
+stemming、lemmatization：使用定义的规则来normalize单词 went->go
+```
+
+# Word Representation
+```
+one-hot representation: 词典出现的单词为1，其他位为0
+
+所以sentence representation(Boolean)就是把所以存在的单词为位置1，其他位置0
+另外的sentence representation(count)每个单词的值为其在句子中的出现次数，而不仅仅是1
+```
+
+# Sentence Similarity
+```
+1. 欧式距离 d=|s1-s2| 越小越好
+2. 余弦相似度 d=s1*s2/(|s1|*|s2|) *为内积 越大越好
+```
+
+# tf-idf Representation
+```
+tfidf(w)=tf(d,w)*idf(w)
+tf(d,w)：文档d中w的词频
+idf(w)：log(N/N(w)) N:语料库文档总数  N(w):词语w出现在多少个文档
+这是计算的每个单词的tfidf值，sentence representation的时候在这个单词位置的值是tfidf值，其他位置为0
+```
+
+# Measure Similarity Between Words
+```
+one-hot的表示方式导致计算欧式距离全部相同、余弦相似度全都是0，所以不能表示单词之前的相似度差别
+one-hot的另一个问题：稀疏矩阵，0太多
+所以向量的长度不应该等于字典长度，需要缩短尽量每一位都有值，改为distributed representation
+```
+
+# Word Embedding to Sentence Embedding
+```
+方法一：平均法，求句子每个单词向量各个位上的平均值
 ```
