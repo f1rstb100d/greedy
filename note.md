@@ -212,3 +212,44 @@ one-hot的另一个问题：稀疏矩阵，0太多
 
 QA系统：先过滤出来至少包含问题中任意一个单词的知识库问题，然后再计算这个问题和知识库提取出来的问题的相似度，减少计算复杂度(不用把问题和知识库里每个问题求相似度)
 ```
+
+# Language Model
+```
+用来判断一句话语法是否通顺
+Chain Rule: P(abcd)=p(a)p(b|a)p(c|ab)p(d|abc)
+p(d|abc)计算过程：从文档里找所有abc连着的字符串，找出其中下一位是d的占全部abc字符串的比例
+但是，abc太长了，文档很难找到abc连在一起的字符串，导致p为0
+使用Markov Assumption解决这个概率计算问题
+1. 近似p(d|abc)约等于p(d|c) 只考虑最近的一位 叫做 1st order Markov Assumption
+2. p(d|abc)约等于p(d|bc) 2nd order Markov Assumption
+3. p(d|abc)约等于p(d|abc) 3rd order Markov Assumption
+带入到句子概率计算中，用来简化计算
+1. p(abcd)=p(a)p(b|a)p(c|b)p(d|c) 1st order
+2. p(abcd)=p(a)p(b|a)p(c|ab)p(d|bc) 2st oder
+3. p(abcd)=p(a)p(b|a)p(c|ab)p(d|abc) 3rd order
+也可参考前面语言模型提到的unigram, bigram(用1st order Markov假设得到的), N-gram
+```
+
+# Perplexity
+```
+Perplexity=2^(-x) x: average log likelihood
+用来判断语言模型好不好
+```
+![](https://github.com/f1rstb100d/greedy/blob/master/jpg/Perplexity.jpg)
+
+# Smoothing
+```
+p(d|abc)但凡abcd不连但abcd缺失有意义，结果计算出来是0，需要光滑处理下
+1. Add-one Smoothing
+2. Add-K Smoothing
+3. Interpolation
+4. Good-Turning Smoothing
+```
+![](https://github.com/f1rstb100d/greedy/blob/master/jpg/Add-one%20Smoothing.jpg)
+![](https://github.com/f1rstb100d/greedy/blob/master/jpg/Add-K%20Smoothing.jpg)
+![](https://github.com/f1rstb100d/greedy/blob/master/jpg/Interpolation.jpg)
+
+# Dynamic Programming
+```
+1. 最大子序列和
+```
